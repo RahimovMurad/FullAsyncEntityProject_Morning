@@ -13,10 +13,14 @@ namespace FullAsyncEntityProject.DataAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder
-               .UseSqlServer("Data Source=(localdb)\\ProjectModels;Initial Catalog=StepDB6;Integrated Security=True;Trust Server Certificate=False;");
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
